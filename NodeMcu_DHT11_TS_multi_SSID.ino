@@ -9,8 +9,8 @@
 //#define USE_TEST_CHANNEL
 #define SKIP_TS_COMMUNICATION
 
-#define VERSION               "v2.2"
-#define BUILDNUM                  13
+#define VERSION               "v2.3"
+#define BUILDNUM                  14
 
 #define SERIAL_BOUND_RATE     115200
 
@@ -301,7 +301,7 @@ void HandleData(){
 void HandleMultipleData(){
   //Serial.println("HandleData called...");
   lastPhaseStatus = getCurrentPhaseState();
-  String message = "" +  String(valC) + " " +  String(valH) + " status: " + lastPhaseStatus;
+  String message = "" +  String(valC) + "|" +  String(valH) + "|" + lastPhaseStatus;
   server.send(200, "text/html", message );
 }
 
