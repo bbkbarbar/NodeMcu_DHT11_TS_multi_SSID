@@ -270,14 +270,23 @@ void HandleRoot(){
 String getCurrentPhaseState(){
      //Declare an object of class HTTPClient
  
-    http.begin("192.168.1.161:81/data");  //Specify request destination
-    int httpCode = http.GET();                                  //Send the request
+    // old
+    //http.begin("192.168.1.170:81/data");  //Specify request destination
+    // new
+    String statusServerPath = "http://192.168.1.170:81/data";
+    http.begin(client, statusServerPath.c_str());  //Specify request destination
 
+
+    int httpCode = http.GET();                                  //Send the request
+    //Serial.print("PhaseStatus - resultCode: " + String(httpCode) + " ps: ");
+    
     String payload = "";
     if (httpCode > 0) { //Check the returning code
       payload = http.getString();   //Get the request response payload
+      //Serial.print(payload);
       //Serial.println(payload);             //Print the response payload
     }
+    //Serial.println("");
  
     http.end();   //Close connection
     return payload;
@@ -309,7 +318,8 @@ void showPureValues(){
   message += "\t\t\"tempF\": \"" + String(valF) + "\",\n\r";
   message += "\t\t\"humidity\": \"" + String(valH) + "\",\n\r";
   message += "\t\t\"heatIndex\": \"" + String(valT) + "\"\n\r";
-  message += "\t}\n\r";
+  message += "\t},\n\r";
+  message += "\t\"phaseStatus\": \"" + getCurrentPhaseState() + "\"\n\r";
   message += "}\n\r";
   server.send(200, "text/json", message );
 }
@@ -410,6 +420,7 @@ void sensorLoop(long now){
   if( (now - lastTemp) > DELAY_BETWEEN_ITERATIONS_IN_MS ){ //Take a measurement at a fixed time (durationTemp = 5000ms, 5s)
     //delay(dht.getMinimumSamplingPeriod());
     //delay(dht.getMinimumSamplingPeriod());
+    lastPhaseStatus = getCurrentPhaseState();
     
     lastTemp = now;
     elapsedTime = now;
@@ -424,6 +435,9 @@ void sensorLoop(long now){
     valF = dht.toFahrenheit(temperature);
     valT = dht.computeHeatIndex(temperature, humidity, false);
    
+    Serial.print("PhaseStatus: ");
+    Serial.print(lastPhaseStatus);
+    Serial.print("\t");
     Serial.print(dht.getStatusString());
     Serial.print("\t");
     Serial.print(humidity, 1);
