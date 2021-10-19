@@ -10,7 +10,7 @@
 #define SKIP_TS_COMMUNICATION
 
 #define VERSION               "v2.3"
-#define BUILDNUM                  14
+#define BUILDNUM                  15
 
 #define SERIAL_BOUND_RATE     115200
 
